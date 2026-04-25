@@ -1,0 +1,11 @@
+appId: com.example.placeholder
+---
+- launchApp
+- takeScreenshot: home
+- tapOn: "Sign in"
+- inputText: "user@example.com"
+- takeScreenshot: login
+- tapOn: "Continue"
+- takeScreenshot: feed
+- tapOn: "Profile"
+- takeScreenshot: profile
