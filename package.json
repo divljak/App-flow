@@ -1,0 +1,15 @@
+{
+  "name": "app-flow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turn a Maestro test flow into a self-contained HTML canvas of an app's screens.",
+  "type": "module",
+  "scripts": {
+    "build": "node src/build.mjs flows/placeholder.yaml dist/flow-map.html",
+    "flow": "maestro test flows/placeholder.yaml",
+    "all": "npm run build"
+  },
+  "dependencies": {
+    "yaml": "^2.5.0"
+  }
+}

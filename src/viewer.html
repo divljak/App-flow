@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flow Map</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+<link rel="stylesheet" href="https://esm.sh/reactflow@11.11.4/dist/style.css" />
+
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/": "https://esm.sh/react@18.3.1/",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "reactflow": "https://esm.sh/reactflow@11.11.4?deps=react@18.3.1,react-dom@18.3.1",
+    "dagre": "https://esm.sh/dagre@0.8.5",
+    "htm": "https://esm.sh/htm@3.1.1",
+    "htm/react": "https://esm.sh/htm@3.1.1/react?deps=react@18.3.1"
+  }
+}
+</script>
+
+<style>
+/* {{STYLES}} */
+</style>
+
+<script>
+/* {{FLOW_DATA}} */
+</script>
+</head>
+<body>
+
+<header class="specimen">
+  <h1>Flow Map</h1>
+  <div class="meta">
+    <span id="meta-source"></span>
+    <span class="accent"> · </span>
+    <span id="meta-screens"></span>
+  </div>
+</header>
+
+<div id="canvas"></div>
+
+<script type="module">
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import ReactFlow, {
+  Background,
+  Controls,
+  MarkerType,
+  ReactFlowProvider,
+  useReactFlow,
+  Handle,
+  Position,
+} from 'reactflow';
+import dagre from 'dagre';
+import htm from 'htm';
+
+const html = htm.bind(React.createElement);
+
+// Populate header meta
+document.getElementById('meta-source').textContent = FLOW_DATA.meta.source;
+document.getElementById('meta-screens').textContent = `${FLOW_DATA.meta.screens} screens`;
+
+// Custom node: a screen card.
+function ScreenNode({ data }) {
+  return html`
+    <div class="screen-card">
+      <div class="label">
+        <span class="name">${data.name}</span>
+        <span class="index">${data.indexLabel}</span>
+      </div>
+      <div class="frame">
+        <img src=${data.image} alt=${data.name} draggable="false" />
+      </div>
+      <${Handle} type="target" position=${Position.Left} />
+      <${Handle} type="source" position=${Position.Right} />
+    </div>
+  `;
+}
+
+const nodeTypes = { screen: ScreenNode };
+
+// Dagre layout, left-to-right.
+const NODE_W = 224;   // 200 card + 12 padding × 2
+const NODE_H = 520;   // approximate measured card height
+const RANK_SEP = 96;
+const NODE_SEP = 40;
+
+function layoutLR(nodes, edges) {
+  const g = new dagre.graphlib.Graph();
+  g.setGraph({ rankdir: 'LR', nodesep: NODE_SEP, ranksep: RANK_SEP, marginx: 40, marginy: 40 });
+  g.setDefaultEdgeLabel(() => ({}));
+  for (const n of nodes) g.setNode(n.id, { width: NODE_W, height: NODE_H });
+  for (const e of edges) g.setEdge(e.source, e.target);
+  dagre.layout(g);
+  return nodes.map((n) => {
+    const { x, y } = g.node(n.id);
+    return { ...n, position: { x: x - NODE_W / 2, y: y - NODE_H / 2 } };
+  });
+}
+
+// Per-screen-name occurrence index, so duplicates get a #2, #3 suffix in the label.
+function withOccurrenceLabels(rawNodes) {
+  const counts = {};
+  return rawNodes.map((n) => {
+    counts[n.name] = (counts[n.name] || 0) + 1;
+    const indexLabel = counts[n.name] > 1 ? `#${counts[n.name]}` : '';
+    return { ...n, indexLabel };
+  });
+}
+
+const labeledRaw = withOccurrenceLabels(FLOW_DATA.nodes);
+
+const positionedNodes = layoutLR(
+  labeledRaw.map((n) => ({
+    id: n.id,
+    type: 'screen',
+    data: { name: n.name, image: n.image, indexLabel: n.indexLabel },
+    position: { x: 0, y: 0 },
+  })),
+  FLOW_DATA.edges
+);
+
+const styledEdges = FLOW_DATA.edges.map((e) => ({
+  id: e.id,
+  source: e.source,
+  target: e.target,
+  label: e.label,
+  type: 'smoothstep',
+  labelBgPadding: [6, 4],
+  labelBgBorderRadius: 4,
+  markerEnd: { type: MarkerType.ArrowClosed, color: '#c8503c' },
+}));
+
+function App() {
+  const flow = useReactFlow();
+  React.useEffect(() => {
+    const id = requestAnimationFrame(() => flow.fitView({ padding: 0.15, duration: 400 }));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  return html`
+    <${ReactFlow}
+      nodes=${positionedNodes}
+      edges=${styledEdges}
+      nodeTypes=${nodeTypes}
+      proOptions=${{ hideAttribution: false }}
+      minZoom=${0.1}
+      maxZoom=${1.5}
+      nodesDraggable=${true}
+      panOnDrag
+      zoomOnScroll
+    >
+      <${Background} variant="dots" gap=${24} size=${1.2} color="#d8cfb8" />
+      <${Controls} showInteractive=${false} />
+    <//>
+  `;
+}
+
+createRoot(document.getElementById('canvas')).render(
+  html`<${ReactFlowProvider}><${App} /><//>`
+);
+</script>
+
+</body>
+</html>
