@@ -1,0 +1,35 @@
+appId: com.ef.campusconnect
+---
+# Precondition: on Ambassador detail (from prior run). Capture the scrolled view, then close.
+- scroll
+- waitForAnimationToEnd:
+    timeout: 2000
+- takeScreenshot: screenshots/17b-home-ambassador-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Back at Home-bottom
+- tapOn: "Home\nTab 1 of 5"
+- waitForAnimationToEnd:
+    timeout: 2000
+- scroll
+- scroll
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# ===== REUNION PARTY — tap inside card bounds (y=80% is within card 499-740) =====
+- tapOn:
+    point: "50%,80%"
+- waitForAnimationToEnd:
+    timeout: 10000
+- takeScreenshot: screenshots/18-home-reunion
+- scroll
+- waitForAnimationToEnd:
+    timeout: 2000
+- takeScreenshot: screenshots/18b-home-reunion-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd:
+    timeout: 3000

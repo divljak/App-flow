@@ -1,0 +1,8 @@
+appId: com.ef.campusconnect
+---
+- tapOn: "My Trip\nTab 2 of 5"
+- extendedWaitUntil:
+    visible:
+      text: "My Trip\nTab 2 of 5, selected"
+    timeout: 5000
+- takeScreenshot: screenshots/03-my-trip

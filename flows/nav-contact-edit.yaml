@@ -1,0 +1,12 @@
+appId: com.ef.campusconnect
+---
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd:
+    timeout: 4000
+- tapOn: "My Details"
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn:
+    point: "363,601"
+- waitForAnimationToEnd:
+    timeout: 8000

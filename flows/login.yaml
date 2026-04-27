@@ -1,0 +1,10 @@
+appId: com.ef.campusconnect
+---
+- tapOn: "Email Address"
+- inputText: ${EMAIL}
+- tapOn: "Password"
+- inputText: ${PASSWORD}
+- tapOn:
+    text: "Sign in"
+    index: 0
+- takeScreenshot: after-login

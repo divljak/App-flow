@@ -1,0 +1,24 @@
+appId: com.ef.campusconnect
+---
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd:
+    timeout: 4000
+- tapOn: "My Details"
+- waitForAnimationToEnd:
+    timeout: 5000
+# Second Edit button (Contact details) — bounds [350,589][377,614], center (363,601)
+- tapOn:
+    point: "363,601"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/55-contact-edit
+- swipe:
+    start: "50%,75%"
+    end: "50%,25%"
+- waitForAnimationToEnd:
+    timeout: 2000
+- takeScreenshot: screenshots/55b-contact-edit-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd:
+    timeout: 3000

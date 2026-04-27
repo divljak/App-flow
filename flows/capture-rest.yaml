@@ -1,0 +1,60 @@
+appId: com.ef.campusconnect
+---
+# MY TRIP — remaining drill-downs
+- tapOn: "Accommodation"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/23-mytrip-accommodation
+- scroll
+- takeScreenshot: screenshots/23b-mytrip-accommodation-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+
+- tapOn: "Travel details"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/24-mytrip-travel
+- scroll
+- takeScreenshot: screenshots/24b-mytrip-travel-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+
+- tapOn: "Campus information"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/25-mytrip-campus
+- scroll
+- takeScreenshot: screenshots/25b-mytrip-campus-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+
+- tapOn: "Prepare for your trip"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/26-mytrip-prepare
+- scroll
+- takeScreenshot: screenshots/26b-mytrip-prepare-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+
+# SCHEDULE
+- tapOn: "Schedule\nTab 3 of 5"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/30-schedule
+
+# PROFILE — root + scrolled
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/40-profile-top
+- scroll
+- takeScreenshot: screenshots/41-profile-mid
+- scroll
+- takeScreenshot: screenshots/42-profile-bottom
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd

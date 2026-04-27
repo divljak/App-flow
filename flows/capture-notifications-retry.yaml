@@ -1,0 +1,21 @@
+appId: com.ef.campusconnect
+---
+# Get back to Home
+- tapOn: "Home\nTab 1 of 5"
+- waitForAnimationToEnd:
+    timeout: 4000
+
+# Dump hierarchy so we can verify bell bounds
+- takeScreenshot: screenshots/_debug-home-before-bell
+
+# Try the bell with a slightly different coord — shift right and down
+- tapOn:
+    point: "90%,9%"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/13-home-notifications
+- scroll
+- takeScreenshot: screenshots/13b-home-notifications-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd

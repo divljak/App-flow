@@ -1,0 +1,49 @@
+appId: com.ef.campusconnect
+---
+# Notification bell (top-right)
+- tapOn:
+    point: "366,74"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/13-home-notifications
+- scroll
+- takeScreenshot: screenshots/13b-home-notifications-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+
+# Feedback banner
+- tapOn: "Please give us your feedback now!"
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: screenshots/14-home-feedback
+- scroll
+- takeScreenshot: screenshots/14b-home-feedback-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+- tapOn: "Home\nTab 1 of 5"
+- waitForAnimationToEnd
+
+# View your certificates
+- tapOn: "View your certificates"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/15-home-certificates
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+- tapOn: "Home\nTab 1 of 5"
+- waitForAnimationToEnd
+
+# Invite a friend card — coord tap (card has only accessibilityText)
+- tapOn:
+    point: "200,672"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/16-home-invite
+- scroll
+- takeScreenshot: screenshots/16b-home-invite-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd

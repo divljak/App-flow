@@ -1,0 +1,85 @@
+appId: com.ef.campusconnect
+---
+# Reunion Party — coord tap on the "Get more details" button area
+- tapOn:
+    point: "50%,88%"
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: screenshots/18-home-reunion
+- scroll
+- takeScreenshot: screenshots/18b-home-reunion-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+
+# ===== SCHEDULE — expand month view =====
+- tapOn: "Schedule\nTab 3 of 5"
+- waitForAnimationToEnd:
+    timeout: 4000
+- tapOn:
+    point: "50%,27%"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: screenshots/31-schedule-month
+
+# ===== SETTINGS → Select language =====
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd:
+    timeout: 4000
+- tapOn: "Settings"
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn: "Select language"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: screenshots/51-settings-language
+- scroll
+- takeScreenshot: screenshots/51b-settings-language-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+
+# ===== MY DETAILS → Edit (Personal Details) =====
+- tapOn: "My Details"
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn:
+    text: "Edit"
+    index: 0
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: screenshots/52-mydetails-edit
+- scroll
+- takeScreenshot: screenshots/52b-mydetails-edit-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd
+
+# ===== PAYMENTS → View all + View items bought =====
+- tapOn: "Payments"
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn: "View all"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: screenshots/53-payments-history
+- scroll
+- takeScreenshot: screenshots/53b-payments-history-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd
+
+- tapOn: "View items bought"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: screenshots/54-payments-items
+- scroll
+- takeScreenshot: screenshots/54b-payments-items-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd

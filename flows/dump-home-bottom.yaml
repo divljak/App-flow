@@ -1,0 +1,9 @@
+appId: com.ef.campusconnect
+---
+- tapOn: "Home\nTab 1 of 5"
+- waitForAnimationToEnd:
+    timeout: 4000
+- scroll
+- scroll
+- waitForAnimationToEnd:
+    timeout: 2000

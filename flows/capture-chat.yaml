@@ -1,0 +1,13 @@
+appId: com.ef.campusconnect
+---
+- tapOn: "Close"
+- waitForAnimationToEnd
+- tapOn: "Help\nTab 5 of 5"
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn: "Chat now"
+- waitForAnimationToEnd:
+    timeout: 10000
+- takeScreenshot: screenshots/62-help-chat
+- scroll
+- takeScreenshot: screenshots/62b-help-chat-scrolled

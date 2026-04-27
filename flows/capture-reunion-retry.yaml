@@ -1,0 +1,13 @@
+appId: com.ef.campusconnect
+---
+# Variant A: try text-based tapOn
+- runFlow:
+    when:
+      true: true
+    commands:
+      - tapOn:
+          text: "Get more details"
+          optional: true
+      - waitForAnimationToEnd:
+          timeout: 10000
+      - takeScreenshot: screenshots/_reunion-tryA

@@ -1,0 +1,18 @@
+appId: com.ef.campusconnect
+---
+- takeScreenshot: screenshots/02-home
+- tapOn: "My Trip\nTab 2 of 5"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/03-my-trip
+- tapOn: "Schedule\nTab 3 of 5"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/04-schedule
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/05-profile
+- tapOn: "Help\nTab 5 of 5"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/06-help
+- tapOn: "Home\nTab 1 of 5"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/07-home-return

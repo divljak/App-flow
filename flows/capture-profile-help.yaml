@@ -1,0 +1,82 @@
+appId: com.ef.campusconnect
+---
+# We're on Profile root. Skip Refer a friend (already captured).
+
+- tapOn: "My Details"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/44-profile-mydetails
+- scroll
+- takeScreenshot: screenshots/44b-profile-mydetails-scrolled
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd
+
+- tapOn: "My certificates"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/45-profile-certificates
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd
+
+- tapOn: "Documents"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/46-profile-documents
+- scroll
+- takeScreenshot: screenshots/46b-profile-documents-scrolled
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd
+
+- tapOn: "Student ID"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/47-profile-studentid
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd
+
+- tapOn: "Insurance details"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/48-profile-insurance
+- scroll
+- takeScreenshot: screenshots/48b-profile-insurance-scrolled
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd
+
+- tapOn: "Payments"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/49-profile-payments
+- scroll
+- takeScreenshot: screenshots/49b-profile-payments-scrolled
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd
+
+- tapOn: "Settings"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/50-profile-settings
+- scroll
+- takeScreenshot: screenshots/50b-profile-settings-scrolled
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd
+
+# HELP
+- tapOn: "Help\nTab 5 of 5"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/60-help
+
+- tapOn: "Visit the Help centre"
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: screenshots/61-help-center
+- scroll
+- takeScreenshot: screenshots/61b-help-center-scrolled
+- tapOn: "Help\nTab 5 of 5"
+- waitForAnimationToEnd
+
+- tapOn: "Chat now"
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: screenshots/62-help-chat

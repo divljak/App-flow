@@ -1,0 +1,24 @@
+appId: com.ef.campusconnect
+---
+# Nav back to edit form
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd:
+    timeout: 4000
+- tapOn: "My Details"
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn:
+    point: "363,123"
+- waitForAnimationToEnd:
+    timeout: 6000
+# Swipe up from lower portion to bring content up
+- swipe:
+    start: "50%,75%"
+    end: "50%,25%"
+- waitForAnimationToEnd:
+    timeout: 2000
+- takeScreenshot: screenshots/52b-mydetails-edit-scrolled
+- tapOn:
+    point: "30,82"
+- waitForAnimationToEnd:
+    timeout: 3000

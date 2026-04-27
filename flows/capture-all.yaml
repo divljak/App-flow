@@ -1,0 +1,163 @@
+appId: com.ef.campusconnect
+---
+# HOME
+- tapOn: "Home\nTab 1 of 5"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: screenshots/10-home-top
+- scroll
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/11-home-mid
+- scroll
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/12-home-bottom
+
+# MY TRIP
+- tapOn: "My Trip\nTab 2 of 5"
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: screenshots/20-mytrip
+
+- tapOn: "Course"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/21-mytrip-course
+- scroll
+- takeScreenshot: screenshots/21b-mytrip-course-scrolled
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Activities"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/22-mytrip-activities
+- scroll
+- takeScreenshot: screenshots/22b-mytrip-activities-scrolled
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Accommodation"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/23-mytrip-accommodation
+- scroll
+- takeScreenshot: screenshots/23b-mytrip-accommodation-scrolled
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Travel details"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/24-mytrip-travel
+- scroll
+- takeScreenshot: screenshots/24b-mytrip-travel-scrolled
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Campus information"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/25-mytrip-campus
+- scroll
+- takeScreenshot: screenshots/25b-mytrip-campus-scrolled
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Prepare for your trip"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/26-mytrip-prepare
+- scroll
+- takeScreenshot: screenshots/26b-mytrip-prepare-scrolled
+- back
+- waitForAnimationToEnd
+
+# SCHEDULE
+- tapOn: "Schedule\nTab 3 of 5"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/30-schedule
+
+# PROFILE
+- tapOn: "Profile\nTab 4 of 5"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/40-profile
+- scroll
+- takeScreenshot: screenshots/41-profile-scrolled
+- scroll
+- takeScreenshot: screenshots/41b-profile-bottom
+
+- tapOn:
+    text: "Refer a friend"
+    index: 0
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/42-profile-refer
+- back
+- waitForAnimationToEnd
+
+- tapOn: "My Details"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/43-profile-mydetails
+- scroll
+- takeScreenshot: screenshots/43b-profile-mydetails-scrolled
+- back
+- waitForAnimationToEnd
+
+- tapOn: "My certificates"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/44-profile-certificates
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Documents"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/45-profile-documents
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Student ID"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/46-profile-studentid
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Insurance details"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/47-profile-insurance
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Payments"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/48-profile-payments
+- back
+- waitForAnimationToEnd
+
+- tapOn: "Settings"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/49-profile-settings
+- scroll
+- takeScreenshot: screenshots/49b-profile-settings-scrolled
+- back
+- waitForAnimationToEnd
+
+# HELP
+- tapOn: "Help\nTab 5 of 5"
+- waitForAnimationToEnd:
+    timeout: 6000
+- takeScreenshot: screenshots/50-help
+
+- tapOn: "Visit the Help centre"
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: screenshots/51-help-center
+- back
