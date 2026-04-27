@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flow Map</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+<link rel="stylesheet" href="https://esm.sh/reactflow@11.11.4/dist/style.css" />
+
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/": "https://esm.sh/react@18.3.1/",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "reactflow": "https://esm.sh/reactflow@11.11.4?deps=react@18.3.1,react-dom@18.3.1",
+    "dagre": "https://esm.sh/dagre@0.8.5",
+    "htm": "https://esm.sh/htm@3.1.1",
+    "htm/react": "https://esm.sh/htm@3.1.1/react?deps=react@18.3.1"
+  }
+}
+</script>
+
+<style>
+:root {
+  --paper: #f7f1e3;
+  --paper-edge: #efe7d2;
+  --dot: #d8cfb8;
+  --ink: #1a1a1a;
+  --ink-muted: rgba(26, 26, 26, 0.55);
+  --card: #ffffff;
+  --card-shadow: 0 4px 16px rgba(20, 20, 20, 0.06), 0 1px 2px rgba(20, 20, 20, 0.04);
+  --vermilion: #c8503c;
+  --vermilion-faded: rgba(200, 80, 60, 0.55);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+header.specimen {
+  padding: 28px 36px 18px;
+  border-bottom: 1px solid var(--paper-edge);
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  background: var(--paper);
+  z-index: 2;
+}
+
+header.specimen h1 {
+  margin: 0;
+  font-family: 'Fraunces', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 44px;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+header.specimen .meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+header.specimen .accent {
+  color: var(--vermilion);
+}
+
+#canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* Screen card */
+.screen-card {
+  width: 200px;
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  padding: 12px 12px 10px;
+  border: 1px solid transparent;
+  transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.screen-card:hover,
+.react-flow__node.selected .screen-card {
+  border-color: var(--vermilion);
+  box-shadow: 0 6px 20px rgba(200, 80, 60, 0.12), 0 1px 2px rgba(20, 20, 20, 0.05);
+}
+
+.screen-card .label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 8px;
+}
+
+.screen-card .label .name {
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+.screen-card .label .index {
+  color: var(--vermilion-faded);
+}
+
+.screen-card .frame {
+  width: 100%;
+  aspect-ratio: 390 / 844;
+  background: #111;
+  border-radius: 8px;
+  overflow: hidden;
+  display: block;
+}
+
+.screen-card .frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* React Flow overrides */
+.react-flow__node {
+  cursor: default;
+}
+
+.react-flow__handle {
+  width: 6px;
+  height: 6px;
+  background: var(--vermilion-faded);
+  border: none;
+}
+
+.react-flow__edge-path {
+  stroke: var(--vermilion-faded);
+  stroke-width: 1.4;
+}
+
+.react-flow__edge.selected .react-flow__edge-path,
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: var(--vermilion);
+  stroke-width: 1.8;
+}
+
+.react-flow__edge-text {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 10px !important;
+  fill: var(--ink) !important;
+}
+
+.react-flow__edge-textbg {
+  fill: var(--paper) !important;
+}
+
+.react-flow__arrowhead polyline,
+.react-flow__arrowhead path {
+  fill: var(--vermilion-faded);
+  stroke: var(--vermilion-faded);
+}
+
+.react-flow__controls {
+  box-shadow: var(--card-shadow);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  background: var(--card);
+  border-bottom: 1px solid var(--paper-edge);
+  color: var(--ink);
+}
+
+.react-flow__controls-button:hover {
+  background: var(--paper);
+  color: var(--vermilion);
+}
+
+.react-flow__attribution {
+  background: transparent;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-muted);
+}
+
+</style>
+
+<script>
+const FLOW_DATA = {"nodes":[{"id":"10-home-top#0","name":"10-home-top","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"11-home-mid#1","name":"11-home-mid","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"12-home-bottom#2","name":"12-home-bottom","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"20-mytrip#3","name":"20-mytrip","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"21-mytrip-course#4","name":"21-mytrip-course","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"21b-mytrip-course-scrolled#5","name":"21b-mytrip-course-scrolled","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"22-mytrip-activities#6","name":"22-mytrip-activities","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"22b-mytrip-activities-scrolled#7","name":"22b-mytrip-activities-scrolled","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"23-mytrip-accommodation#8","name":"23-mytrip-accommodation","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"23b-mytrip-accommodation-scrolled#9","name":"23b-mytrip-accommodation-scrolled","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"24-mytrip-travel#10","name":"24-mytrip-travel","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"24b-mytrip-travel-scrolled#11","name":"24b-mytrip-travel-scrolled","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"25-mytrip-campus#12","name":"25-mytrip-campus","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"25b-mytrip-campus-scrolled#13","name":"25b-mytrip-campus-scrolled","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"26-mytrip-prepare#14","name":"26-mytrip-prepare","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"26b-mytrip-prepare-scrolled#15","name":"26b-mytrip-prepare-scrolled","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"30-schedule#16","name":"30-schedule","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"40-profile#17","name":"40-profile","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"41-profile-scrolled#18","name":"41-profile-scrolled","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"41b-profile-bottom#19","name":"41b-profile-bottom","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"42-profile-refer#20","name":"42-profile-refer","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"43-profile-mydetails#21","name":"43-profile-mydetails","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"43b-profile-mydetails-scrolled#22","name":"43b-profile-mydetails-scrolled","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"44-profile-certificates#23","name":"44-profile-certificates","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"45-profile-documents#24","name":"45-profile-documents","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"46-profile-studentid#25","name":"46-profile-studentid","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"47-profile-insurance#26","name":"47-profile-insurance","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"48-profile-payments#27","name":"48-profile-payments","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"49-profile-settings#28","name":"49-profile-settings","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"49b-profile-settings-scrolled#29","name":"49b-profile-settings-scrolled","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"50-help#30","name":"50-help","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="},{"id":"51-help-center#31","name":"51-help-center","image":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOTAgODQ0Ij48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWMxZjI0Ii8+PHRleHQgeD0iNTAlIiB5PSI0OCUiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubywgbW9ub3NwYWNlIiBmb250LXNpemU9IjIyIiBmaWxsPSIjYzg1MDNjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjY1Ij5ubyBjYXB0dXJlIHlldDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU2JSIgZm9udC1mYW1pbHk9IkpldEJyYWlucyBNb25vLCBtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNkOGNmYjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNSI+cnVuIG5wbSBydW4gZmxvdzwvdGV4dD48L3N2Zz4="}],"edges":[{"id":"10-home-top#0->11-home-mid#1","source":"10-home-top#0","target":"11-home-mid#1","label":"scroll"},{"id":"11-home-mid#1->12-home-bottom#2","source":"11-home-mid#1","target":"12-home-bottom#2","label":"scroll"},{"id":"12-home-bottom#2->20-mytrip#3","source":"12-home-bottom#2","target":"20-mytrip#3","label":"tapOn \"My Trip / Tab 2 of 5\""},{"id":"20-mytrip#3->21-mytrip-course#4","source":"20-mytrip#3","target":"21-mytrip-course#4","label":"tapOn \"Course\""},{"id":"21-mytrip-course#4->21b-mytrip-course-scrolled#5","source":"21-mytrip-course#4","target":"21b-mytrip-course-scrolled#5","label":"scroll"},{"id":"21b-mytrip-course-scrolled#5->22-mytrip-activities#6","source":"21b-mytrip-course-scrolled#5","target":"22-mytrip-activities#6","label":"back  →  tapOn \"Activities\""},{"id":"22-mytrip-activities#6->22b-mytrip-activities-scrolled#7","source":"22-mytrip-activities#6","target":"22b-mytrip-activities-scrolled#7","label":"scroll"},{"id":"22b-mytrip-activities-scrolled#7->23-mytrip-accommodation#8","source":"22b-mytrip-activities-scrolled#7","target":"23-mytrip-accommodation#8","label":"back  →  tapOn \"Accommodation\""},{"id":"23-mytrip-accommodation#8->23b-mytrip-accommodation-scrolled#9","source":"23-mytrip-accommodation#8","target":"23b-mytrip-accommodation-scrolled#9","label":"scroll"},{"id":"23b-mytrip-accommodation-scrolled#9->24-mytrip-travel#10","source":"23b-mytrip-accommodation-scrolled#9","target":"24-mytrip-travel#10","label":"back  →  tapOn \"Travel details\""},{"id":"24-mytrip-travel#10->24b-mytrip-travel-scrolled#11","source":"24-mytrip-travel#10","target":"24b-mytrip-travel-scrolled#11","label":"scroll"},{"id":"24b-mytrip-travel-scrolled#11->25-mytrip-campus#12","source":"24b-mytrip-travel-scrolled#11","target":"25-mytrip-campus#12","label":"back  →  tapOn \"Campus information\""},{"id":"25-mytrip-campus#12->25b-mytrip-campus-scrolled#13","source":"25-mytrip-campus#12","target":"25b-mytrip-campus-scrolled#13","label":"scroll"},{"id":"25b-mytrip-campus-scrolled#13->26-mytrip-prepare#14","source":"25b-mytrip-campus-scrolled#13","target":"26-mytrip-prepare#14","label":"back  →  tapOn \"Prepare for your trip\""},{"id":"26-mytrip-prepare#14->26b-mytrip-prepare-scrolled#15","source":"26-mytrip-prepare#14","target":"26b-mytrip-prepare-scrolled#15","label":"scroll"},{"id":"26b-mytrip-prepare-scrolled#15->30-schedule#16","source":"26b-mytrip-prepare-scrolled#15","target":"30-schedule#16","label":"back  →  tapOn \"Schedule / Tab 3 of 5\""},{"id":"30-schedule#16->40-profile#17","source":"30-schedule#16","target":"40-profile#17","label":"tapOn \"Profile / Tab 4 of 5\""},{"id":"40-profile#17->41-profile-scrolled#18","source":"40-profile#17","target":"41-profile-scrolled#18","label":"scroll"},{"id":"41-profile-scrolled#18->41b-profile-bottom#19","source":"41-profile-scrolled#18","target":"41b-profile-bottom#19","label":"scroll"},{"id":"41b-profile-bottom#19->42-profile-refer#20","source":"41b-profile-bottom#19","target":"42-profile-refer#20","label":"tapOn \"Refer a friend\""},{"id":"42-profile-refer#20->43-profile-mydetails#21","source":"42-profile-refer#20","target":"43-profile-mydetails#21","label":"back  →  tapOn \"My Details\""},{"id":"43-profile-mydetails#21->43b-profile-mydetails-scrolled#22","source":"43-profile-mydetails#21","target":"43b-profile-mydetails-scrolled#22","label":"scroll"},{"id":"43b-profile-mydetails-scrolled#22->44-profile-certificates#23","source":"43b-profile-mydetails-scrolled#22","target":"44-profile-certificates#23","label":"back  →  tapOn \"My certificates\""},{"id":"44-profile-certificates#23->45-profile-documents#24","source":"44-profile-certificates#23","target":"45-profile-documents#24","label":"back  →  tapOn \"Documents\""},{"id":"45-profile-documents#24->46-profile-studentid#25","source":"45-profile-documents#24","target":"46-profile-studentid#25","label":"back  →  tapOn \"Student ID\""},{"id":"46-profile-studentid#25->47-profile-insurance#26","source":"46-profile-studentid#25","target":"47-profile-insurance#26","label":"back  →  tapOn \"Insurance details\""},{"id":"47-profile-insurance#26->48-profile-payments#27","source":"47-profile-insurance#26","target":"48-profile-payments#27","label":"back  →  tapOn \"Payments\""},{"id":"48-profile-payments#27->49-profile-settings#28","source":"48-profile-payments#27","target":"49-profile-settings#28","label":"back  →  tapOn \"Settings\""},{"id":"49-profile-settings#28->49b-profile-settings-scrolled#29","source":"49-profile-settings#28","target":"49b-profile-settings-scrolled#29","label":"scroll"},{"id":"49b-profile-settings-scrolled#29->50-help#30","source":"49b-profile-settings-scrolled#29","target":"50-help#30","label":"back  →  tapOn \"Help / Tab 5 of 5\""},{"id":"50-help#30->51-help-center#31","source":"50-help#30","target":"51-help-center#31","label":"tapOn \"Visit the Help centre\""}],"meta":{"source":"flows/campus-connect.yaml","screens":32}};
+</script>
+</head>
+<body>
+
+<header class="specimen">
+  <h1>Flow Map</h1>
+  <div class="meta">
+    <span id="meta-source"></span>
+    <span class="accent"> · </span>
+    <span id="meta-screens"></span>
+  </div>
+</header>
+
+<div id="canvas"></div>
+
+<script type="module">
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import ReactFlow, {
+  Background,
+  Controls,
+  MarkerType,
+  ReactFlowProvider,
+  useReactFlow,
+  Handle,
+  Position,
+} from 'reactflow';
+import dagre from 'dagre';
+import htm from 'htm';
+
+const html = htm.bind(React.createElement);
+
+// Populate header meta
+document.getElementById('meta-source').textContent = FLOW_DATA.meta.source;
+document.getElementById('meta-screens').textContent = `${FLOW_DATA.meta.screens} screens`;
+
+// Custom node: a screen card.
+function ScreenNode({ data }) {
+  return html`
+    <div class="screen-card">
+      <div class="label">
+        <span class="name">${data.name}</span>
+        <span class="index">${data.indexLabel}</span>
+      </div>
+      <div class="frame">
+        <img src=${data.image} alt=${data.name} draggable="false" />
+      </div>
+      <${Handle} type="target" position=${Position.Left} />
+      <${Handle} type="source" position=${Position.Right} />
+    </div>
+  `;
+}
+
+const nodeTypes = { screen: ScreenNode };
+
+// Dagre layout, left-to-right.
+const NODE_W = 224;   // 200 card + 12 padding × 2
+const NODE_H = 520;   // approximate measured card height
+const RANK_SEP = 96;
+const NODE_SEP = 40;
+
+function layoutLR(nodes, edges) {
+  const g = new dagre.graphlib.Graph();
+  g.setGraph({ rankdir: 'LR', nodesep: NODE_SEP, ranksep: RANK_SEP, marginx: 40, marginy: 40 });
+  g.setDefaultEdgeLabel(() => ({}));
+  for (const n of nodes) g.setNode(n.id, { width: NODE_W, height: NODE_H });
+  for (const e of edges) g.setEdge(e.source, e.target);
+  dagre.layout(g);
+  return nodes.map((n) => {
+    const { x, y } = g.node(n.id);
+    return { ...n, position: { x: x - NODE_W / 2, y: y - NODE_H / 2 } };
+  });
+}
+
+// Per-screen-name occurrence index, so duplicates get a #2, #3 suffix in the label.
+function withOccurrenceLabels(rawNodes) {
+  const counts = {};
+  return rawNodes.map((n) => {
+    counts[n.name] = (counts[n.name] || 0) + 1;
+    const indexLabel = counts[n.name] > 1 ? `#${counts[n.name]}` : '';
+    return { ...n, indexLabel };
+  });
+}
+
+const labeledRaw = withOccurrenceLabels(FLOW_DATA.nodes);
+
+const positionedNodes = layoutLR(
+  labeledRaw.map((n) => ({
+    id: n.id,
+    type: 'screen',
+    data: { name: n.name, image: n.image, indexLabel: n.indexLabel },
+    position: { x: 0, y: 0 },
+  })),
+  FLOW_DATA.edges
+);
+
+const styledEdges = FLOW_DATA.edges.map((e) => ({
+  id: e.id,
+  source: e.source,
+  target: e.target,
+  label: e.label,
+  type: 'smoothstep',
+  labelBgPadding: [6, 4],
+  labelBgBorderRadius: 4,
+  markerEnd: { type: MarkerType.ArrowClosed, color: '#c8503c' },
+}));
+
+function App() {
+  const flow = useReactFlow();
+  React.useEffect(() => {
+    const id = requestAnimationFrame(() => flow.fitView({ padding: 0.15, duration: 400 }));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  return html`
+    <${ReactFlow}
+      nodes=${positionedNodes}
+      edges=${styledEdges}
+      nodeTypes=${nodeTypes}
+      proOptions=${{ hideAttribution: false }}
+      minZoom=${0.1}
+      maxZoom=${1.5}
+      nodesDraggable=${true}
+      panOnDrag
+      zoomOnScroll
+    >
+      <${Background} variant="dots" gap=${24} size=${1.2} color="#d8cfb8" />
+      <${Controls} showInteractive=${false} />
+    <//>
+  `;
+}
+
+createRoot(document.getElementById('canvas')).render(
+  html`<${ReactFlowProvider}><${App} /><//>`
+);
+</script>
+
+</body>
+</html>
