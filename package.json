@@ -9,7 +9,8 @@
     "build:campus-connect": "node src/build.mjs flows/campus-connect.yaml dist/flow-map.html",
     "flow": "maestro test flows/campus-connect.yaml",
     "all": "npm run build",
-    "all:campus-connect": "npm run flow && npm run build:campus-connect"
+    "all:campus-connect": "npm run flow && npm run optimize && npm run build:campus-connect",
+    "optimize": "pngquant --quality 60-85 --skip-if-larger --strip --force --ext .png screenshots/*.png"
   },
   "dependencies": {
     "yaml": "^2.5.0"
