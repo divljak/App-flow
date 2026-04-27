@@ -35,6 +35,29 @@ if (!commands) {
   process.exit(1);
 }
 
+// Pre-pass: scan raw YAML text for `# flow: <name>` markers and pair each
+// with the screenshot names that follow until the next marker. Comments
+// aren't preserved by the YAML parser, so we do this on the raw text.
+function extractFlowMap(rawText) {
+  const lines = rawText.split('\n');
+  const map = new Map(); // screenshot raw value → flow name
+  let current = null;
+  for (const line of lines) {
+    const flowMatch = /^\s*#\s*flow\s*:\s*(.+?)\s*$/i.exec(line);
+    if (flowMatch) {
+      current = flowMatch[1];
+      continue;
+    }
+    const ssMatch = /^\s*-\s*takeScreenshot\s*:\s*(.+?)\s*$/.exec(line);
+    if (ssMatch && current) {
+      map.set(ssMatch[1].replace(/^["']|["']$/g, ''), current);
+    }
+  }
+  return map;
+}
+
+const flowMap = extractFlowMap(readFileSync(inYaml, 'utf8'));
+
 function commandLabel(cmd) {
   if (typeof cmd === 'string') return cmd;
   const [name, value] = Object.entries(cmd)[0];
@@ -92,7 +115,8 @@ for (const cmd of commands) {
       console.warn(`  ⚠ missing: ${rel} — using placeholder frame`);
       dataUri = MISSING_FRAME_DATA_URI;
     }
-    nodes.push({ id, name: displayName, image: dataUri });
+    const flow = flowMap.get(rawName) || null;
+    nodes.push({ id, name: displayName, image: dataUri, flow });
     if (prevNodeId !== null) {
       edges.push({
         id: `${prevNodeId}->${id}`,

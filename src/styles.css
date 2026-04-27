@@ -59,6 +59,39 @@ header.specimen .accent {
   color: var(--vermilion);
 }
 
+/* Layout toggle pills (right side of header) */
+.layout-toggle {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.layout-toggle-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border: 1px solid var(--paper-edge);
+  background: var(--card);
+  color: var(--ink-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms, background 120ms;
+}
+
+.layout-toggle-btn:hover {
+  color: var(--ink);
+  border-color: var(--vermilion-faded);
+}
+
+.layout-toggle-btn.active {
+  color: var(--vermilion);
+  border-color: var(--vermilion);
+  background: var(--paper);
+}
+
 #canvas {
   flex: 1;
   min-height: 0;

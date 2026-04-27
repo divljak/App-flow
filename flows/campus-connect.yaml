@@ -1,39 +1,41 @@
 appId: com.ef.campusconnect
 ---
 # ─── HOME ───
+
+# flow: Home — overview
 - tapOn: "Home\nTab 1 of 5"
 - waitForAnimationToEnd
 - takeScreenshot: screenshots/10-home-top
 - scroll
 - takeScreenshot: screenshots/11-home-mid
 
-# Notifications
+# flow: Home — Notifications
 - tapOn: "Notifications"
 - takeScreenshot: screenshots/13-home-notifications
 - scroll
 - takeScreenshot: screenshots/13b-home-notifications-scrolled
 - back
 
-# Feedback
+# flow: Home — Feedback
 - tapOn: "Feedback"
 - takeScreenshot: screenshots/14-home-feedback
 - scroll
 - takeScreenshot: screenshots/14b-home-feedback-scrolled
 - back
 
-# Certificates (home tile)
+# flow: Home — Certificates tile
 - tapOn: "Certificates"
 - takeScreenshot: screenshots/15-home-certificates
 - back
 
-# Invite a friend
+# flow: Home — Invite a friend
 - tapOn: "Invite a friend"
 - takeScreenshot: screenshots/16-home-invite
 - scroll
 - takeScreenshot: screenshots/16b-home-invite-scrolled
 - back
 
-# Become an ambassador
+# flow: Home — Become an ambassador
 - tapOn: "Ambassador"
 - takeScreenshot: screenshots/17-home-ambassador
 - scroll
@@ -41,40 +43,48 @@ appId: com.ef.campusconnect
 - back
 
 # ─── MY TRIP ───
+
+# flow: My Trip — overview
 - tapOn: "My Trip\nTab 2 of 5"
 - waitForAnimationToEnd
 - takeScreenshot: screenshots/20-mytrip
 
+# flow: My Trip — Course
 - tapOn: "Course"
 - takeScreenshot: screenshots/21-mytrip-course
 - scroll
 - takeScreenshot: screenshots/21b-mytrip-course-scrolled
 - back
 
+# flow: My Trip — Activities
 - tapOn: "Activities"
 - takeScreenshot: screenshots/22-mytrip-activities
 - scroll
 - takeScreenshot: screenshots/22b-mytrip-activities-scrolled
 - back
 
+# flow: My Trip — Accommodation
 - tapOn: "Accommodation"
 - takeScreenshot: screenshots/23-mytrip-accommodation
 - scroll
 - takeScreenshot: screenshots/23b-mytrip-accommodation-scrolled
 - back
 
+# flow: My Trip — Travel details
 - tapOn: "Travel details"
 - takeScreenshot: screenshots/24-mytrip-travel
 - scroll
 - takeScreenshot: screenshots/24b-mytrip-travel-scrolled
 - back
 
+# flow: My Trip — Campus information
 - tapOn: "Campus information"
 - takeScreenshot: screenshots/25-mytrip-campus
 - scroll
 - takeScreenshot: screenshots/25b-mytrip-campus-scrolled
 - back
 
+# flow: My Trip — Prepare for your trip
 - tapOn: "Prepare for your trip"
 - takeScreenshot: screenshots/26-mytrip-prepare
 - scroll
@@ -82,6 +92,8 @@ appId: com.ef.campusconnect
 - back
 
 # ─── SCHEDULE ───
+
+# flow: Schedule
 - tapOn: "Schedule\nTab 3 of 5"
 - waitForAnimationToEnd
 - takeScreenshot: screenshots/30-schedule
@@ -89,62 +101,64 @@ appId: com.ef.campusconnect
 - takeScreenshot: screenshots/31-schedule-month
 
 # ─── PROFILE ───
+
+# flow: Profile — overview
 - tapOn: "Profile\nTab 4 of 5"
 - waitForAnimationToEnd
 - takeScreenshot: screenshots/40-profile-top
 - scroll
 - takeScreenshot: screenshots/41-profile-mid
 
-# Refer a friend
+# flow: Profile — Refer a friend
 - tapOn: "Refer a friend"
 - takeScreenshot: screenshots/43-profile-refer
 - scroll
 - takeScreenshot: screenshots/43b-profile-refer-scrolled
 - back
 
-# My Details
+# flow: Profile — My Details
 - tapOn: "My Details"
 - takeScreenshot: screenshots/44-profile-mydetails
 - scroll
 - takeScreenshot: screenshots/44b-profile-mydetails-scrolled
 - back
 
-# My certificates
+# flow: Profile — My certificates
 - tapOn: "My certificates"
 - takeScreenshot: screenshots/45-profile-certificates
 - back
 
-# Documents
+# flow: Profile — Documents
 - tapOn: "Documents"
 - takeScreenshot: screenshots/46-profile-documents
 - scroll
 - takeScreenshot: screenshots/46b-profile-documents-scrolled
 - back
 
-# Student ID
+# flow: Profile — Student ID
 - tapOn: "Student ID"
 - takeScreenshot: screenshots/47-profile-studentid
 - back
 
-# Insurance details
+# flow: Profile — Insurance details
 - tapOn: "Insurance details"
 - takeScreenshot: screenshots/48-profile-insurance
 - scroll
 - takeScreenshot: screenshots/48b-profile-insurance-scrolled
 - back
 
-# Payments
+# flow: Profile — Payments
 - tapOn: "Payments"
 - takeScreenshot: screenshots/49-profile-payments
 - scroll
 - takeScreenshot: screenshots/49b-profile-payments-scrolled
 - back
 
-# Settings
+# flow: Profile — Settings
 - tapOn: "Settings"
 - takeScreenshot: screenshots/50-profile-settings
 
-# Settings → Language
+# flow: Settings — Language
 - tapOn: "Language"
 - takeScreenshot: screenshots/51-settings-language
 - scroll
@@ -152,7 +166,7 @@ appId: com.ef.campusconnect
 - back
 - back
 
-# My Details → Edit
+# flow: My Details — Edit
 - tapOn: "My Details"
 - tapOn: "Edit"
 - takeScreenshot: screenshots/52-mydetails-edit
@@ -161,7 +175,7 @@ appId: com.ef.campusconnect
 - back
 - back
 
-# Payments → History
+# flow: Payments — History
 - tapOn: "Payments"
 - tapOn: "History"
 - takeScreenshot: screenshots/53-payments-history
@@ -169,7 +183,7 @@ appId: com.ef.campusconnect
 - takeScreenshot: screenshots/53b-payments-history-scrolled
 - back
 
-# Payments → Items
+# flow: Payments — Items
 - tapOn: "Items"
 - takeScreenshot: screenshots/54-payments-items
 - scroll
@@ -177,14 +191,14 @@ appId: com.ef.campusconnect
 - back
 - back
 
-# My Details → Edit contact
+# flow: My Details — Edit contact
 - tapOn: "My Details"
 - tapOn: "Edit contact"
 - takeScreenshot: screenshots/55-contact-edit
 - back
 - back
 
-# Documents → document detail
+# flow: Documents — detail
 - tapOn: "Documents"
 - tapOn: "Open document"
 - takeScreenshot: screenshots/56-document-detail
@@ -192,11 +206,13 @@ appId: com.ef.campusconnect
 - back
 
 # ─── HELP ───
+
+# flow: Help — overview
 - tapOn: "Help\nTab 5 of 5"
 - waitForAnimationToEnd
 - takeScreenshot: screenshots/60-help
 
-# Help → Chat
+# flow: Help — Chat
 - tapOn: "Chat"
 - takeScreenshot: screenshots/62-help-chat
 - scroll

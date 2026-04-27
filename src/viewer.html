@@ -43,6 +43,7 @@
     <span class="accent"> · </span>
     <span id="meta-screens"></span>
   </div>
+  <div id="layout-toggle" class="layout-toggle"></div>
 </header>
 
 <div id="canvas"></div>
@@ -114,11 +115,12 @@ function deriveSection(name) {
   return m ? m[1] : '_';
 }
 
-function layoutBySections(nodes) {
-  // Group preserving first-seen order
-  const groups = new Map(); // key → [node, ...]
+// Generic row layout. `keyFn` returns the row key for each node (a string).
+// `labelFn` returns the human label for that row key.
+function layoutByRows(nodes, keyFn, labelFn) {
+  const groups = new Map();
   for (const n of nodes) {
-    const key = deriveSection(n.data.name);
+    const key = keyFn(n);
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(n);
   }
@@ -129,9 +131,9 @@ function layoutBySections(nodes) {
   for (const [key, list] of groups) {
     const y = row * (NODE_H + ROW_GAP);
     headers.push({
-      id: `__section-${key}`,
+      id: `__row-${key}`,
       type: 'section',
-      data: { label: SECTION_NAMES[key] || `SECTION ${key}` },
+      data: { label: labelFn(key) },
       position: { x: -HEADER_W - 20, y },
       draggable: false,
       selectable: false,
@@ -142,6 +144,22 @@ function layoutBySections(nodes) {
     row++;
   }
   return [...headers, ...positioned];
+}
+
+function layoutBySections(nodes) {
+  return layoutByRows(
+    nodes,
+    (n) => deriveSection(n.data.name),
+    (key) => SECTION_NAMES[key] || `SECTION ${key}`
+  );
+}
+
+function layoutByFlow(nodes) {
+  return layoutByRows(
+    nodes,
+    (n) => n.data.flow || '— unspecified —',
+    (key) => key
+  );
 }
 
 // Per-screen-name occurrence index, so duplicates get a #2, #3 suffix in the label.
@@ -156,14 +174,12 @@ function withOccurrenceLabels(rawNodes) {
 
 const labeledRaw = withOccurrenceLabels(FLOW_DATA.nodes);
 
-const positionedNodes = layoutBySections(
-  labeledRaw.map((n) => ({
-    id: n.id,
-    type: 'screen',
-    data: { name: n.name, image: n.image, indexLabel: n.indexLabel },
-    position: { x: 0, y: 0 },
-  }))
-);
+const baseScreenNodes = labeledRaw.map((n) => ({
+  id: n.id,
+  type: 'screen',
+  data: { name: n.name, image: n.image, indexLabel: n.indexLabel, flow: n.flow },
+  position: { x: 0, y: 0 },
+}));
 
 const styledEdges = FLOW_DATA.edges.map((e) => ({
   id: e.id,
@@ -176,19 +192,42 @@ const styledEdges = FLOW_DATA.edges.map((e) => ({
   markerEnd: { type: MarkerType.ArrowClosed, color: '#c8503c' },
 }));
 
+const LAYOUTS = {
+  section: { label: 'By section', fn: layoutBySections },
+  flow:    { label: 'By flow',    fn: layoutByFlow },
+};
+
 function App() {
-  const flow = useReactFlow();
+  const rf = useReactFlow();
+  const [mode, setMode] = React.useState('section');
+  const positionedNodes = React.useMemo(() => LAYOUTS[mode].fn(baseScreenNodes), [mode]);
+
   React.useEffect(() => {
-    const id = requestAnimationFrame(() => flow.fitView({ padding: 0.15, duration: 400 }));
+    const id = requestAnimationFrame(() => rf.fitView({ padding: 0.15, duration: 400 }));
     return () => cancelAnimationFrame(id);
-  }, []);
+  }, [mode]);
+
+  // Render the toggle into the header slot we set up in the body.
+  React.useEffect(() => {
+    const slot = document.getElementById('layout-toggle');
+    if (!slot) return;
+    slot.innerHTML = '';
+    Object.entries(LAYOUTS).forEach(([key, def]) => {
+      const btn = document.createElement('button');
+      btn.className = 'layout-toggle-btn' + (mode === key ? ' active' : '');
+      btn.textContent = def.label;
+      btn.onclick = () => setMode(key);
+      slot.appendChild(btn);
+    });
+  }, [mode]);
+
   return html`
     <${ReactFlow}
       nodes=${positionedNodes}
       edges=${styledEdges}
       nodeTypes=${nodeTypes}
       proOptions=${{ hideAttribution: false }}
-      minZoom=${0.1}
+      minZoom=${0.05}
       maxZoom=${1.5}
       nodesDraggable=${true}
       panOnDrag
