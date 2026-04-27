@@ -418,26 +418,33 @@ const baseScreenNodes = labeledRaw.map((n) => ({
   position: { x: 0, y: 0 },
 }));
 
-const styledEdges = FLOW_DATA.edges.map((e) => ({
-  id: e.id,
-  source: e.source,
-  target: e.target,
-  label: e.label,
-  type: 'smoothstep',
-  labelBgPadding: [6, 4],
-  labelBgBorderRadius: 4,
-  markerEnd: { type: MarkerType.ArrowClosed, color: '#c8503c' },
-}));
+const flowById = new Map(baseScreenNodes.map((n) => [n.id, n.data.flow]));
+
+function buildEdges(intraFlowOnly) {
+  return FLOW_DATA.edges
+    .filter((e) => !intraFlowOnly || flowById.get(e.source) === flowById.get(e.target))
+    .map((e) => ({
+      id: e.id,
+      source: e.source,
+      target: e.target,
+      label: e.label,
+      type: 'smoothstep',
+      labelBgPadding: [6, 4],
+      labelBgBorderRadius: 4,
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#c8503c' },
+    }));
+}
 
 const LAYOUTS = {
-  section: { label: 'By section', fn: layoutBySections },
-  flow:    { label: 'By flow',    fn: layoutByFlow },
+  section: { label: 'By section', fn: layoutBySections, intraFlowOnly: false },
+  flow:    { label: 'By flow',    fn: layoutByFlow,     intraFlowOnly: true  },
 };
 
 function App() {
   const rf = useReactFlow();
   const [mode, setMode] = React.useState('section');
   const positionedNodes = React.useMemo(() => LAYOUTS[mode].fn(baseScreenNodes), [mode]);
+  const edges = React.useMemo(() => buildEdges(LAYOUTS[mode].intraFlowOnly), [mode]);
 
   React.useEffect(() => {
     const id = requestAnimationFrame(() => rf.fitView({ padding: 0.15, duration: 400 }));
@@ -461,10 +468,10 @@ function App() {
   return html`
     <${ReactFlow}
       nodes=${positionedNodes}
-      edges=${styledEdges}
+      edges=${edges}
       nodeTypes=${nodeTypes}
       proOptions=${{ hideAttribution: false }}
-      minZoom=${0.05}
+      minZoom=${0.02}
       maxZoom=${1.5}
       nodesDraggable=${true}
       panOnDrag
