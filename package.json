@@ -6,8 +6,10 @@
   "type": "module",
   "scripts": {
     "build": "node src/build.mjs flows/placeholder.yaml dist/flow-map.html",
-    "flow": "maestro test flows/placeholder.yaml",
-    "all": "npm run build"
+    "build:campus-connect": "node src/build.mjs flows/campus-connect.yaml dist/flow-map.html",
+    "flow": "maestro test flows/campus-connect.yaml",
+    "all": "npm run build",
+    "all:campus-connect": "npm run flow && npm run build:campus-connect"
   },
   "dependencies": {
     "yaml": "^2.5.0"
