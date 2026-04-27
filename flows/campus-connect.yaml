@@ -1,163 +1,203 @@
 appId: com.ef.campusconnect
 ---
-# HOME
+# ─── HOME ───
 - tapOn: "Home\nTab 1 of 5"
-- waitForAnimationToEnd:
-    timeout: 5000
+- waitForAnimationToEnd
 - takeScreenshot: screenshots/10-home-top
 - scroll
-- waitForAnimationToEnd
 - takeScreenshot: screenshots/11-home-mid
-- scroll
-- waitForAnimationToEnd
-- takeScreenshot: screenshots/12-home-bottom
 
-# MY TRIP
+# Notifications
+- tapOn: "Notifications"
+- takeScreenshot: screenshots/13-home-notifications
+- scroll
+- takeScreenshot: screenshots/13b-home-notifications-scrolled
+- back
+
+# Feedback
+- tapOn: "Feedback"
+- takeScreenshot: screenshots/14-home-feedback
+- scroll
+- takeScreenshot: screenshots/14b-home-feedback-scrolled
+- back
+
+# Certificates (home tile)
+- tapOn: "Certificates"
+- takeScreenshot: screenshots/15-home-certificates
+- back
+
+# Invite a friend
+- tapOn: "Invite a friend"
+- takeScreenshot: screenshots/16-home-invite
+- scroll
+- takeScreenshot: screenshots/16b-home-invite-scrolled
+- back
+
+# Become an ambassador
+- tapOn: "Ambassador"
+- takeScreenshot: screenshots/17-home-ambassador
+- scroll
+- takeScreenshot: screenshots/17b-home-ambassador-scrolled
+- back
+
+# ─── MY TRIP ───
 - tapOn: "My Trip\nTab 2 of 5"
-- waitForAnimationToEnd:
-    timeout: 8000
+- waitForAnimationToEnd
 - takeScreenshot: screenshots/20-mytrip
 
 - tapOn: "Course"
-- waitForAnimationToEnd:
-    timeout: 6000
 - takeScreenshot: screenshots/21-mytrip-course
 - scroll
 - takeScreenshot: screenshots/21b-mytrip-course-scrolled
 - back
-- waitForAnimationToEnd
 
 - tapOn: "Activities"
-- waitForAnimationToEnd:
-    timeout: 6000
 - takeScreenshot: screenshots/22-mytrip-activities
 - scroll
 - takeScreenshot: screenshots/22b-mytrip-activities-scrolled
 - back
-- waitForAnimationToEnd
 
 - tapOn: "Accommodation"
-- waitForAnimationToEnd:
-    timeout: 6000
 - takeScreenshot: screenshots/23-mytrip-accommodation
 - scroll
 - takeScreenshot: screenshots/23b-mytrip-accommodation-scrolled
 - back
-- waitForAnimationToEnd
 
 - tapOn: "Travel details"
-- waitForAnimationToEnd:
-    timeout: 6000
 - takeScreenshot: screenshots/24-mytrip-travel
 - scroll
 - takeScreenshot: screenshots/24b-mytrip-travel-scrolled
 - back
-- waitForAnimationToEnd
 
 - tapOn: "Campus information"
-- waitForAnimationToEnd:
-    timeout: 6000
 - takeScreenshot: screenshots/25-mytrip-campus
 - scroll
 - takeScreenshot: screenshots/25b-mytrip-campus-scrolled
 - back
-- waitForAnimationToEnd
 
 - tapOn: "Prepare for your trip"
-- waitForAnimationToEnd:
-    timeout: 6000
 - takeScreenshot: screenshots/26-mytrip-prepare
 - scroll
 - takeScreenshot: screenshots/26b-mytrip-prepare-scrolled
 - back
-- waitForAnimationToEnd
 
-# SCHEDULE
+# ─── SCHEDULE ───
 - tapOn: "Schedule\nTab 3 of 5"
-- waitForAnimationToEnd:
-    timeout: 6000
+- waitForAnimationToEnd
 - takeScreenshot: screenshots/30-schedule
+- tapOn: "Month"
+- takeScreenshot: screenshots/31-schedule-month
 
-# PROFILE
+# ─── PROFILE ───
 - tapOn: "Profile\nTab 4 of 5"
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/40-profile
-- scroll
-- takeScreenshot: screenshots/41-profile-scrolled
-- scroll
-- takeScreenshot: screenshots/41b-profile-bottom
-
-- tapOn:
-    text: "Refer a friend"
-    index: 0
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/42-profile-refer
-- back
 - waitForAnimationToEnd
+- takeScreenshot: screenshots/40-profile-top
+- scroll
+- takeScreenshot: screenshots/41-profile-mid
 
+# Refer a friend
+- tapOn: "Refer a friend"
+- takeScreenshot: screenshots/43-profile-refer
+- scroll
+- takeScreenshot: screenshots/43b-profile-refer-scrolled
+- back
+
+# My Details
 - tapOn: "My Details"
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/43-profile-mydetails
+- takeScreenshot: screenshots/44-profile-mydetails
 - scroll
-- takeScreenshot: screenshots/43b-profile-mydetails-scrolled
+- takeScreenshot: screenshots/44b-profile-mydetails-scrolled
 - back
-- waitForAnimationToEnd
 
+# My certificates
 - tapOn: "My certificates"
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/44-profile-certificates
+- takeScreenshot: screenshots/45-profile-certificates
 - back
-- waitForAnimationToEnd
 
+# Documents
 - tapOn: "Documents"
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/45-profile-documents
-- back
-- waitForAnimationToEnd
-
-- tapOn: "Student ID"
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/46-profile-studentid
-- back
-- waitForAnimationToEnd
-
-- tapOn: "Insurance details"
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/47-profile-insurance
-- back
-- waitForAnimationToEnd
-
-- tapOn: "Payments"
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/48-profile-payments
-- back
-- waitForAnimationToEnd
-
-- tapOn: "Settings"
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/49-profile-settings
+- takeScreenshot: screenshots/46-profile-documents
 - scroll
-- takeScreenshot: screenshots/49b-profile-settings-scrolled
+- takeScreenshot: screenshots/46b-profile-documents-scrolled
 - back
-- waitForAnimationToEnd
 
-# HELP
+# Student ID
+- tapOn: "Student ID"
+- takeScreenshot: screenshots/47-profile-studentid
+- back
+
+# Insurance details
+- tapOn: "Insurance details"
+- takeScreenshot: screenshots/48-profile-insurance
+- scroll
+- takeScreenshot: screenshots/48b-profile-insurance-scrolled
+- back
+
+# Payments
+- tapOn: "Payments"
+- takeScreenshot: screenshots/49-profile-payments
+- scroll
+- takeScreenshot: screenshots/49b-profile-payments-scrolled
+- back
+
+# Settings
+- tapOn: "Settings"
+- takeScreenshot: screenshots/50-profile-settings
+
+# Settings → Language
+- tapOn: "Language"
+- takeScreenshot: screenshots/51-settings-language
+- scroll
+- takeScreenshot: screenshots/51b-settings-language-scrolled
+- back
+- back
+
+# My Details → Edit
+- tapOn: "My Details"
+- tapOn: "Edit"
+- takeScreenshot: screenshots/52-mydetails-edit
+- scroll
+- takeScreenshot: screenshots/52b-mydetails-edit-scrolled
+- back
+- back
+
+# Payments → History
+- tapOn: "Payments"
+- tapOn: "History"
+- takeScreenshot: screenshots/53-payments-history
+- scroll
+- takeScreenshot: screenshots/53b-payments-history-scrolled
+- back
+
+# Payments → Items
+- tapOn: "Items"
+- takeScreenshot: screenshots/54-payments-items
+- scroll
+- takeScreenshot: screenshots/54b-payments-items-scrolled
+- back
+- back
+
+# My Details → Edit contact
+- tapOn: "My Details"
+- tapOn: "Edit contact"
+- takeScreenshot: screenshots/55-contact-edit
+- back
+- back
+
+# Documents → document detail
+- tapOn: "Documents"
+- tapOn: "Open document"
+- takeScreenshot: screenshots/56-document-detail
+- back
+- back
+
+# ─── HELP ───
 - tapOn: "Help\nTab 5 of 5"
-- waitForAnimationToEnd:
-    timeout: 6000
-- takeScreenshot: screenshots/50-help
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/60-help
 
-- tapOn: "Visit the Help centre"
-- waitForAnimationToEnd:
-    timeout: 8000
-- takeScreenshot: screenshots/51-help-center
-- back
+# Help → Chat
+- tapOn: "Chat"
+- takeScreenshot: screenshots/62-help-chat
+- scroll
+- takeScreenshot: screenshots/62b-help-chat-scrolled
