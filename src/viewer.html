@@ -59,7 +59,6 @@ import ReactFlow, {
   Handle,
   Position,
 } from 'reactflow';
-import dagre from 'dagre';
 import htm from 'htm';
 
 const html = htm.bind(React.createElement);
@@ -85,25 +84,64 @@ function ScreenNode({ data }) {
   `;
 }
 
-const nodeTypes = { screen: ScreenNode };
+// Section row label (non-interactive, sits left of each row).
+function SectionNode({ data }) {
+  return html`<div class="section-header">${data.label}</div>`;
+}
 
-// Dagre layout, left-to-right.
+const nodeTypes = { screen: ScreenNode, section: SectionNode };
+
+// Layout constants
 const NODE_W = 224;   // 200 card + 12 padding × 2
-const NODE_H = 520;   // approximate measured card height
-const RANK_SEP = 96;
-const NODE_SEP = 40;
+const NODE_H = 520;   // approximate card height
+const NODE_SEP = 40;  // horizontal gap between cards in a row
+const ROW_GAP = 100;  // vertical gap between rows
+const HEADER_W = 240; // section label column width
 
-function layoutLR(nodes, edges) {
-  const g = new dagre.graphlib.Graph();
-  g.setGraph({ rankdir: 'LR', nodesep: NODE_SEP, ranksep: RANK_SEP, marginx: 40, marginy: 40 });
-  g.setDefaultEdgeLabel(() => ({}));
-  for (const n of nodes) g.setNode(n.id, { width: NODE_W, height: NODE_H });
-  for (const e of edges) g.setEdge(e.source, e.target);
-  dagre.layout(g);
-  return nodes.map((n) => {
-    const { x, y } = g.node(n.id);
-    return { ...n, position: { x: x - NODE_W / 2, y: y - NODE_H / 2 } };
-  });
+// Map leading digit of screen name → row label. Falls back to the digit itself
+// if not in the table, so unknown sections still get their own row.
+const SECTION_NAMES = {
+  '1': 'HOME',
+  '2': 'MY TRIP',
+  '3': 'SCHEDULE',
+  '4': 'PROFILE',
+  '5': 'PROFILE — sub-flows',
+  '6': 'HELP',
+};
+
+function deriveSection(name) {
+  const m = /^(\d)/.exec(name);
+  return m ? m[1] : '_';
+}
+
+function layoutBySections(nodes) {
+  // Group preserving first-seen order
+  const groups = new Map(); // key → [node, ...]
+  for (const n of nodes) {
+    const key = deriveSection(n.data.name);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(n);
+  }
+
+  const positioned = [];
+  const headers = [];
+  let row = 0;
+  for (const [key, list] of groups) {
+    const y = row * (NODE_H + ROW_GAP);
+    headers.push({
+      id: `__section-${key}`,
+      type: 'section',
+      data: { label: SECTION_NAMES[key] || `SECTION ${key}` },
+      position: { x: -HEADER_W - 20, y },
+      draggable: false,
+      selectable: false,
+    });
+    list.forEach((n, i) => {
+      positioned.push({ ...n, position: { x: i * (NODE_W + NODE_SEP), y } });
+    });
+    row++;
+  }
+  return [...headers, ...positioned];
 }
 
 // Per-screen-name occurrence index, so duplicates get a #2, #3 suffix in the label.
@@ -118,14 +156,13 @@ function withOccurrenceLabels(rawNodes) {
 
 const labeledRaw = withOccurrenceLabels(FLOW_DATA.nodes);
 
-const positionedNodes = layoutLR(
+const positionedNodes = layoutBySections(
   labeledRaw.map((n) => ({
     id: n.id,
     type: 'screen',
     data: { name: n.name, image: n.image, indexLabel: n.indexLabel },
     position: { x: 0, y: 0 },
-  })),
-  FLOW_DATA.edges
+  }))
 );
 
 const styledEdges = FLOW_DATA.edges.map((e) => ({

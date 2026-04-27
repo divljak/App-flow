@@ -65,6 +65,27 @@ header.specimen .accent {
   position: relative;
 }
 
+/* Section row label (non-interactive React Flow node placed left of each row) */
+.section-header {
+  width: 240px;
+  height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 24px;
+  font-family: 'Fraunces', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 36px;
+  letter-spacing: -0.5px;
+  line-height: 1.05;
+  color: var(--vermilion);
+  text-align: right;
+  pointer-events: none;
+  user-select: none;
+  white-space: pre-line;
+}
+
 /* Screen card */
 .screen-card {
   width: 200px;
